@@ -2138,6 +2138,8 @@ class FML implements FMLConstants
 				'crop'   => ( strpos($label, 'Square') !== false && !$is_square ),
 				// not needed in core, but useful here
 				'src'    => $size_data['source'],
+				// MB: Wordpress seems to expect an index 'file' for each size
+				'file' 	 => $size_data['source'],
 			);
 		}
 		// inject back in original (or just overwrite next largest)
@@ -2147,6 +2149,8 @@ class FML implements FMLConstants
 			'height' => intval( $size_data['height'] ),
 			'crop'   => ( strpos($size_data['label'], 'Square') !== false && !$is_square ),
 			'src'    => $size_data['source'],
+			// MB: Wordpress seems to expect an index 'file' for each size
+			'file' 	 => $size_data['source'],
 		);
 		$metadata['sizes']  = $sizes;
 
