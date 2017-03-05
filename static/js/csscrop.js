@@ -35,13 +35,18 @@
 				this.resizeAdded = true;
 			}
 
-			// force a dom redraw for chrome 
+			// force a dom redraw for chrome
 			// http://www.eccesignum.org/blog/solving-display-refreshredrawrepaint-issues-in-webkit-browsers
 			//var n = document.createTextNode(' ');
 			//this.$origParent.append(n);
 			//setTimeout(function(){n.parentNode.removeChild(n);}, 0);
 			//var ignore = this.$origParent.hide().get(0).offsetHeight;
 			//this.$origParent.show();
+
+			// MB: Trigger an event
+			// -- can be used to trigger layout changes after images are cropped
+			$(document).trigger("imageCropped", this.$img);
+
 		};
 		this.refresh = function() {
 			// put everything back where it belongs
@@ -74,7 +79,7 @@
                 ih  = this.$img.height(),
                 sm  = Math.min( ih/th, iw/tw ),
                 scale = 1;
-            
+
             if ( sm != 1 ) {
 	            // image is larger or smaller than bounding box
             	scale = 1/sm;
@@ -100,18 +105,25 @@
 	}
 
 	function csscrop() {
+
 		$('img.csscrop').each(function() {
 			var $this = $(this);
+
 			// check to see if already run, if so do nothing (TODO: call refresh)
-			if ( $this.csscrop ) { return; }
+			if ( $this.csscrop ) {
+				return;
+			}
 			$this.csscrop = new CSSCropObject( $this );
-			// wait until images are loaded before we start messing with their chi
+
+			// wait until images are loaded before we start messing with their children
 			$(window).load(function(){
 				$this.csscrop.crop();
 				//$this.csscrop.refresh();
 			});
 		});
+
 	}
+
 
 	/* onReady: Handle Settings page for Flickr Media Library. */
 	$( function() {
