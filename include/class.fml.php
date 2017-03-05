@@ -1,9 +1,9 @@
-<?php 
+<?php
 namespace FML;
 
 /**
  * Flickr Media Library plugin code that needs to be available everywhere
- * 
+ *
  */
 class FML implements FMLConstants
 {
@@ -30,7 +30,7 @@ class FML implements FMLConstants
 	public $plugin_basename;
 	/**
 	 * List of possible post dates names (indexed by the setting name)
-	 * 
+	 *
 	 * @var array
 	 */
 	public $post_dates_map;
@@ -42,7 +42,7 @@ class FML implements FMLConstants
 	 * List of all Flickr Photo Licenses.
 	 *
 	 * Putting it here saves on an API call
-	 * 
+	 *
 	 * @see https://help.yahoo.com/kb/flickr/safesearch-sln14917.html
 	 * @var array
 	 */
@@ -55,7 +55,7 @@ class FML implements FMLConstants
 	/**
 	 * Set this temporarily to block picturefill sizes from being executed
 	 * until later.
-	 * 
+	 *
 	 * @var boolean
 	 */
 	private $_picturefill_delay_sizes_transient = false;
@@ -75,7 +75,7 @@ class FML implements FMLConstants
 	 * fired, but in the future, it'd be created directly on the main page.
 	 *
 	 * This will set the static variables used by the plugin.
-	 * 
+	 *
 	 * @param  string $pluginFile __FILE__ for the plugin file
 	 */
 	private function __construct($pluginFile) {
@@ -163,7 +163,7 @@ class FML implements FMLConstants
 	 * Used for static method calls. The first time it is called (in bootstrap)
 	 * it should be provided the $plugin_file so it can properly initialize
 	 * itself.
-	 * 
+	 *
 	 * @param  string $plugin_file pass to constructor (on creation)
 	 * @return [type]              [description]
 	 */
@@ -221,11 +221,11 @@ class FML implements FMLConstants
 	}
 	/**
 	 * Stuff to run on `init`
-	 * 
+	 *
 	 * - Register the custom post type used for storing flickr photos. If the
 	 *   register is called earlier, it won't trigger due to missing object on
 	 *   rewrite rule. {@see https://codex.wordpress.org/Function_Reference/register_post_type}
-	 * 
+	 *
 	 * @return void
 	 */
 	public function init() {
@@ -234,7 +234,7 @@ class FML implements FMLConstants
 		$settings = $this->settings;
 
 		// move the code later to give themes a chance to filter it after plugins_loaded
-		
+
 		if ( apply_filters( 'fml_attachment_prepend', $settings['attachment_prepend'] ) ) {
 			add_filter( 'the_content', array( $this, 'attachment_prepend_media') ); //can run anytime
 			if ( apply_filters( 'fml_attachment_prepend_remove', $settings['attachment_prepend_remove'] ) ) {
@@ -306,7 +306,7 @@ class FML implements FMLConstants
 			'show_ui'             => true,  // TODO: display admin panel interface for this post type
 			'show_in_nav_menus'   => true,  // TODO: allow to show in navigation menus
 			'show_in_menu'        => 'upload.php',  // TODO: shows in admin menu inside Media menu
-			
+
 			'show_in_admin_bar'   => false, //whether + New post type is available in admin bar
 			//'menu_position'       => null,  // where to show menu in main menu
 			//'menu_icon'           => '', // url to icon for menu or anme of icon in iconfont
@@ -320,7 +320,7 @@ class FML implements FMLConstants
 				//'author',          // change author
 				//'thumbnail',       // assign featured image
 				'excerpt',           // caption text
-				'trackbacks',      
+				'trackbacks',
 				//'custom-fields',
 				//'comments',        // TODO
 				//'revisions',       // TODO
@@ -345,16 +345,16 @@ class FML implements FMLConstants
 	}
 	//
 	// OVERLOAD PROPERTIES
-	// 
+	//
 	/**
 	 * Simplify access to properties of this plugin
 	 *
 	 * The following properties exist:
-	 * 
+	 *
 	 * - settings(array): The options array for the plugin
 	 * - flickr (\FML\Flickr): flickr api object
 	 * - flickr_callback: the callback URL when authenticating flickr requests
-	 * 
+	 *
 	 * @param  string $name the property to get
 	 * @return mixed the thing to be gotten
 	 */
@@ -366,7 +366,7 @@ class FML implements FMLConstants
 				}
 				return $this->_settings;
 			case 'use_picturefill':
-				return apply_filters( 'fml_image_support_picturefill', $this->settings['image_use_picturefill'] ); 
+				return apply_filters( 'fml_image_support_picturefill', $this->settings['image_use_picturefill'] );
 			case 'picturefill_sizes':
 				return $this->_picturefill_sizes;
 			case 'picturefill_size_map':
@@ -420,14 +420,14 @@ class FML implements FMLConstants
 	 * - shortcode_default*: defaults related to the [fmlmedia] shortcode
 	 * - shortcode_*: features related to the [fmlmedia] shortcode
 	 * - image_*: features related to flickr media image rendering (attachment emulation)
-	 * 
+	 *
 	 * @var array Plugin blog options
 	 */
 	private $_settings = array();
 	// PROPERTIES: Settings
 	/**
 	 * Load options array into settings variable
-	 * 
+	 *
 	 * (and assign anything missing so it upgrades transparently).
 	 *
 	 * The options array is stored in the blog options using the SLUG as the
@@ -469,7 +469,7 @@ class FML implements FMLConstants
 	}
 	/**
 	 * Get the settings array default
-	 * 
+	 *
 	 * @param  boolean $translated By default false values may need to be
 	 *         interpreted into actual values later. Set to true to false.
 	 * @return array               Default settings values
@@ -538,7 +538,7 @@ class FML implements FMLConstants
 	}
 	/**
 	 * Do the extra processing necessary to set the default values.
-	 * 
+	 *
 	 * This only returns the right value if the default value is normally false
 	 * (no checking is done).
 	 * @param  [type] $option [description]
@@ -592,7 +592,7 @@ class FML implements FMLConstants
 	}
 	/**
 	 * Change any settings and save to blog options
-	 * 
+	 *
 	 * @param array $settings options to modify/save. If you just want to save
 	 *        the existing options, just don't provide any settings here.
 	 * @return void
@@ -615,7 +615,7 @@ class FML implements FMLConstants
 	 * Reset all settings to their default values.
 	 *
 	 * I only use this for testing currently, because it's so destructive.
-	 * 
+	 *
 	 * @return void
 	 */
 	public function settings_reset() {
@@ -637,7 +637,7 @@ class FML implements FMLConstants
 	 *
 	 * Register a sizes for use for flickr media. This will make calls into the
 	 * emulated if it exists.
-	 * 
+	 *
 	 * @param  string $handle       name of the class "sizes-$handle" to attach to
 	 * @param  string $sizes_string the sizes attribute to write out
 	 * @param  mixed  $attach_to    single image size (or list of images) to auto apply to
@@ -689,7 +689,7 @@ class FML implements FMLConstants
 	private $_flickr_callback = null;
 	//
 	// FLICKR API PUBLIC METHODS
-	// 
+	//
 	/**
 	 * Return whether we are authenticated with flickr
 	 * @return  bool  true or false
@@ -742,7 +742,7 @@ class FML implements FMLConstants
 	 * This does a transform of the attachment attributes into something
 	 * readable (and processable) by the [fmlmedia] shortcode handler.
 	 * For instance, shortcode attribute names cannot have '-'.
-	 * 
+	 *
 	 * @param  string $html       HTML to send to editor
 	 * @param  int    $id         post id of attachment
 	 * @param  array  $attachment array of attachment attributes
@@ -761,13 +761,13 @@ class FML implements FMLConstants
 				case 'id':
 				case 'align':
 				break;
-				case 'link': 
+				case 'link':
 				// if it's a custom, we don't need to tell it
 				if ( $value == 'custom' ) {
 					$key = '';
 				}
 				break;
-				case 'url': 
+				case 'url':
 				// don't pass through url if the link type is something special
 				if ( in_array( $attachment['link'], array('flickr','post','file') ) ) {
 					$key = '';
@@ -816,7 +816,7 @@ class FML implements FMLConstants
 	 * Trigger the process of the [fmlmedia] shortcode earlier.
 	 *
 	 * This works the same way as the [embed] shortcode.
-	 * 
+	 *
 	 * 1. Remove existing shortcodes
 	 * 2. Register the real [fmlmedia] shortcode
 	 * 3. Run do_shortcode() on content
@@ -879,7 +879,7 @@ class FML implements FMLConstants
 	 * the first valid tag is either the img or the a>img. It does this through
 	 * regex to avoid having to use an expensive DOM parser (and transients).
 	 * Class attributes are treated specially (appended instead of  replaced).
-	 * 
+	 *
 	 * Modify caption is not support because we don't want to be injecting
 	 * content willy nilly at runtime. Note that if you want to deal with the
 	 * fact that caption width attributes are not responsive (which they are
@@ -899,7 +899,7 @@ class FML implements FMLConstants
 	 * 3. If there is no (extracted) content, return html output (prepended)
 	 * 4. If there is content, generate new html by merging remembering to treat
 	 *    class specially. Then inject into content
-	 * 
+	 *
 	 * @see  FML\FML::run_shortcode() Process handler to run shortcode earlier
 	 * @param  array  $atts    shortcode attributes {@see FML\FML::_shortcode_attrs()}
 	 * @param  string $content content shortcode wraps
@@ -930,7 +930,7 @@ class FML implements FMLConstants
 		$settings = $this->settings;
 
 		// 2. Generate HTML output from shortcode (and extract attributes)
-		
+
 		//     This is basically the corrected get_image_send_to_editor()
 		//     without any caption content (which would trigger caption handling)
 		//     Remember the real get_image_send_to_editor and its hooks are
@@ -977,7 +977,7 @@ class FML implements FMLConstants
 			$a_gen = array(
 				'element'    => 'a',
 				'attributes' => array( 'href' => $atts['url'] ),
-				'content'    => $html, // this isn't always valid, but no worries as it will be overwritten 
+				'content'    => $html, // this isn't always valid, but no worries as it will be overwritten
 			);
 			if ( $rel ) { $a_gen['attributes']['rel'] = $rel; }
 			/*
@@ -1008,7 +1008,7 @@ class FML implements FMLConstants
 		}
 		// this handles the empty content case too
 
-		// 4. If there is content, merge unique things from that into our 
+		// 4. If there is content, merge unique things from that into our
 		//    processed output.
 		//    a. no need to run regex on output because we've already extracted
 		//       $a_gen and $img_gen when we generated it
@@ -1069,7 +1069,7 @@ class FML implements FMLConstants
 			$a = apply_filters( 'fml_shortcode_link_attributes', $a, $post->ID, $atts );
 			$replace = self::build_html_attributes( $a );
 		}
-		
+
 		//    f. restore and return
 		return $this->_shortcode_return( $replace, $content, $needle, $post->ID, $atts );
 	}
@@ -1078,7 +1078,7 @@ class FML implements FMLConstants
 	 *
 	 * Basically inserts the shortcode changes back in and triggers the filter
 	 * correctly.
-	 * 
+	 *
 	 * @param  string $replace generated content
 	 * @param  string $content enclosed content
 	 * @param  string $needle  string in enclosed content to match and replace
@@ -1100,7 +1100,7 @@ class FML implements FMLConstants
 	 * Do attribute processing.
 	 *
 	 * These are the attributes:
-	 * 
+	 *
 	 *   - id: The post ID of the flickr Media
 	 *   - flickr_id: if ID is not provided, this is the flickr ID of the image
 	 *   - alt: The alt tag to use in the image
@@ -1221,7 +1221,7 @@ class FML implements FMLConstants
 				);
 			}
 		}
-		 
+
 		// 4. Process Attributes against defaults
 		// Technically we support WordPress 3.5 so we need to trap this (untested)
 		if ( version_compare( $wp_version, '3.6', '<' ) ) {
@@ -1393,7 +1393,7 @@ class FML implements FMLConstants
 	}
 	/**
 	 * Reverse extract_html_attributes()
-	 * 
+	 *
 	 * @param  array  $extract output (or equiv) from extract_html_attributes()
 	 * @return string          the tag rebuilt
 	 */
@@ -1419,7 +1419,7 @@ class FML implements FMLConstants
 	//
 	/**
 	 * Handle template injection of flickr data
-	 * 
+	 *
 	 * @param  [type] $raw_atts [description]
 	 * @param  string $content  [description]
 	 * @param  string $context  [description]
@@ -1575,7 +1575,7 @@ class FML implements FMLConstants
 				return 'https://flickr.com/people/'.$flickr_data['owner']['path_alias'];
 			case 'FLICKR_OWNER_PHOTOS_URL':
 				return 'https://flickr.com/photos/'.$flickr_data['owner']['path_alias'];
-				//      'owner' => 
+				//      'owner' =>
 			case 'FLICKR_PHOTO_URL':
 			case 'FLICKR_PHOTOPAGE':
 				return self::get_flickr_link( $post );
@@ -1635,8 +1635,8 @@ class FML implements FMLConstants
 	//
 	/**
 	 * Saves the default caption values
-	 * 
-	 * @param  mixed  $post 
+	 *
+	 * @param  mixed  $post
 	 * @return void
 	 */
 	static public function caption_create( $post ) {
@@ -1649,7 +1649,7 @@ class FML implements FMLConstants
 	}
 	/**
 	 * [refresh_caption description]
-	 * 
+	 *
 	 * @param  mixed $post_id          WP_Post or integer
 	 * @param  mixed $caption_template if !false then save the captiont emplate
 	 * @return void
@@ -1677,7 +1677,7 @@ class FML implements FMLConstants
 			$post = get_post( $post );
 		}
 		if ( !$post || ( $post->post_type != self:: POST_TYPE ) ) { return false; }
-		
+
 		return get_post_meta( $post->ID, $this->_post_metas['caption_template'], true );
 	}
 	public function caption_set_template( $post, $caption_template ) {
@@ -1685,7 +1685,7 @@ class FML implements FMLConstants
 			$post = get_post( $post );
 		}
 		if ( !$post || ( $post->post_type != self:: POST_TYPE ) ) { return; }
-		
+
 		update_post_meta( $post->ID, $this->_post_metas['caption_template'], $caption_template );
 		// also update post_excerpt
 		$caption = $this->parse_template( $post, $caption_template );
@@ -1751,7 +1751,7 @@ class FML implements FMLConstants
 	}
 	/**
 	 * Inject the srcset and srcs for fmlmedia into attachment
-	 * 
+	 *
 	 * 0. Only do this sort of work on Flickr Media
 	 * 1. Figure out if we're an icon or an image
 	 * 2. Generate srcset
@@ -1759,7 +1759,7 @@ class FML implements FMLConstants
 	 * 4. Figure out sizes (maybe remove width and height)
 	 * 5. Queue picturefill
 	 * 6. Return image
-	 * 
+	 *
 	 * @param  array   $attr the attributes to inject
 	 * @param  WP_Post $post the fml media post
 	 * @param  mixed   $size size string or array
@@ -1829,7 +1829,7 @@ class FML implements FMLConstants
 	 * 4. If size-* or attachment-* is there (using more reliable $size passed in)
 	 * 5. Make "best guess"
 	 * 6. do filter and return
-	 * 
+	 *
 	 * @param  [type] $attr           [description]
 	 * @param  [type] $post           [description]
 	 * @param  [type] $size           [description]
@@ -1876,7 +1876,7 @@ class FML implements FMLConstants
 			list ( $src, $width, $height, $is_intermediate ) = image_downsize( $post->ID, $size );
 			$sizes_string = sprintf( '(max-width: %1$dpx) 100vw, %1$dpx', $width );
 		}
-		
+
 		// 6. do filter and return
 		if ( $sizes_string) {
 			$attr['sizes'] = $sizes_string;
@@ -1917,7 +1917,7 @@ class FML implements FMLConstants
 		$attr['width'] = $size_data['width'];
 		$attr['height'] = $size_data['height'];
 
-		// Assign crop method;	
+		// Assign crop method;
 		if ( empty( $attr['data-csscrop-method'] ) ) {
 			$attr['data-csscrop-method'] = apply_filters( 'fml_image_css_crop_set_method', 'centercrop', $attr, $post, $size );
 		}
@@ -1933,9 +1933,9 @@ class FML implements FMLConstants
 	 *
 	 * prepend_attachment is a filter run to inject the attachment image to the
 	 * attachment page. This emulates that behavior but for flickr media.
-	 * 
+	 *
 	 * This can run anytime as it directly calls the shortcode.
-	 * 
+	 *
 	 * @param  string $content the_content
 	 * @return string          the_content with fml shortcode prepend (if get_post() is flickr media)
 	 */
@@ -1993,7 +1993,7 @@ class FML implements FMLConstants
 	 * not an action. Don't worry the variable would have been set correctly
 	 * inside core, we just need to take advantage of a side-effect of the
 	 * filter used in it.
-	 * 
+	 *
 	 * @param  string $template pass-thru template
 	 * @return string
 	 */
@@ -2008,7 +2008,7 @@ class FML implements FMLConstants
 	}
 	/**
 	 * Inject Flickr image downsize code if image is Flickr Media
-	 * 
+	 *
 	 * @param  bool         $downsize current status of filter
 	 * @param  int          $id       post ID of fml media ("attachment ID")
 	 * @param  array|string $size     size of image (e.g. dimensions, 'medium')
@@ -2095,7 +2095,7 @@ class FML implements FMLConstants
 	/**
 	 * This will strip the upload_dir() from the path by re-running the same
 	 * work to find the file as used when saving the meta info
-	 * 
+	 *
 	 * @param  string $file          the value of get_attached_file()
 	 * @param  int    $post_id       post id of attachment
 	 * @return string
@@ -2111,7 +2111,7 @@ class FML implements FMLConstants
 	/**
 	 * Inject response of wp_get_attachment_metadata() with emulated data
 	 * so that we don't need to save in _wp_attachment_metadata post meta.
-	 * 
+	 *
 	 * @param  array  $metadata metadata to return (empty array for fml media)
 	 * @param  int    $post_id  post id of attachment
 	 * @return array
@@ -2159,8 +2159,8 @@ class FML implements FMLConstants
 	}
 	/**
 	 * Just like wp_prepare_attachment_for_js() but for media images.
-	 * 
-	 * @param  WP_Post $post 
+	 *
+	 * @param  WP_Post $post
 	 * @return Array|null   hash for use in js
 	 * @todo  support injecting sizes
 	 */
@@ -2230,7 +2230,7 @@ class FML implements FMLConstants
 	 * 4. Handle compatibility with exifography
 	 * 5. TODO: Handle FML-specific meta
 	 * 6. Make fields post safe
-	 * 
+	 *
 	 * @param  array  $flickr_data flickr API data stored in meta
 	 * @return array               image meta from EXIF
 	 * @todo  think of moving this into the metadata field
@@ -2363,7 +2363,7 @@ class FML implements FMLConstants
 	    		$meta['country'] = $flickr_data['location']['country']['_content'];
 	    	}
 	    }
-	    //    exposure_program = Exposure Program 
+	    //    exposure_program = Exposure Program
 	    if ( !empty( $exif['Exposure Program'] ) ) {
 	    	$meta['exposure_program'] = $exif['Exposure Program']['raw'];
 	    }
@@ -2415,7 +2415,7 @@ class FML implements FMLConstants
 	}
 	/**
 	 * Turn EXIF data into a hash that's more accessible
-	 * 
+	 *
 	 * @param  array  $exif_array Output from Flickr's EXIF API
 	 * @return array  a hash
 	 */
@@ -2443,7 +2443,7 @@ class FML implements FMLConstants
 	}
 	//
 	// FLICKR UTILITY FUNCTIONS
-	// 
+	//
 	/**
 	 * Attempt to find flickr_id from content (look for photo page)
 	 * @param  string $html content to look for
@@ -2513,7 +2513,7 @@ class FML implements FMLConstants
 	 * Recognize flickr size strings.
 	 *
 	 * Supports <size>, <size_in_classname>, and size-<size_in_classname>.
-	 * 
+	 *
 	 * @param  string  $size_string the string (from a class) or transformed by
 	 *                              class
 	 * @return string|false         the Flickr size string
@@ -2665,10 +2665,10 @@ class FML implements FMLConstants
 	}
 	//
 	// FLICKR MEDIA POSTTYPE
-	// 
+	//
 	/**
 	 * Adds an image from flickr into the flickr media library
-	 * 
+	 *
 	 * @param  string $flickr_id the flickr ID of the image
 	 * @return int|false     the post id created (or false if not)
 	 */
@@ -2691,7 +2691,7 @@ class FML implements FMLConstants
 	}
 	/**
 	 * Attempts to get post stored by flickr_id
-	 * 
+	 *
 	 * @param  string $flickr_id the flickr ID of the image
 	 * @return WP_Post|false     the post found (or false if not)
 	 * @todo   consider doing extra work
@@ -2710,7 +2710,7 @@ class FML implements FMLConstants
 	}
 	/**
 	 * Update a post from either flickr cache or through API calls to flickr.
-	 * 
+	 *
 	 * @param  WP_Post|integer $post      The post or its post ID.
 	 * @param  bool            $force_api whether or force API call or use the
 	 *                                    cache
@@ -2760,7 +2760,7 @@ class FML implements FMLConstants
 	/**
 	 * Accessor for getting image alt to deal with the confusion between where
 	 * and when wp_slash()/wp_unslash() is done.
-	 * 
+	 *
 	 * @param  mixed  $post can be post or post_id (post_id is preferrd)
 	 * @return string       the alt attribute
 	 */
@@ -2771,7 +2771,7 @@ class FML implements FMLConstants
 	/**
 	 * Accessor for setting image alt to deal with the fact update_post_meta
 	 * has stripslashes() built in (yes, it does, can you beleive??)
-	 * 
+	 *
 	 * @param  mixed  $post  can be post or post_id (post_id is preferrd)
 	 * @param  string $value the value to store (unslashed).
 	 */
@@ -2781,7 +2781,7 @@ class FML implements FMLConstants
 	}
 	/**
 	 * Get the Flickr API data from post meta
-	 * 
+	 *
 	 * @param  int|WP_Post $post id or post of a flickr media library attachment
 	 * @return array       cached output from flickr API
 	 */
@@ -2857,7 +2857,7 @@ class FML implements FMLConstants
 	 * - dates[takenunknown]: ?
 	 * - visibility[ispublic, isfriend, isfamily]
 	 * - permissions[permaddmeta,permcomment]: ???
-	 * - editability[canaddmeta,cancomment]: 1/0 
+	 * - editability[canaddmeta,cancomment]: 1/0
 	 * - publiceditability[canaddmeta,cancomment]: (0 or 1)
 	 * - views: #
 	 * - usage[candownload, canblog, canprint, canshare]
@@ -2872,7 +2872,7 @@ class FML implements FMLConstants
 	 * - sizes[size]: array with properties [label,width,height,source,url,media]
 	 * - camera: exif extracted camer name
 	 * - exif[]: array with properties [tagspace, tagspaceid, tag, label, raw._content]
-	 * 
+	 *
 	 * @param  string  $flickr_id    flickr ID of photo
 	 * @param  integer $last_updated the unix timestamp it was last updated
 	 * @return array                 array of various raw flickr data merged, empty if no data to add
@@ -2934,7 +2934,7 @@ class FML implements FMLConstants
 			'post_content'   => $data['description']['_content'], // image content will be prepended using the_content hook a la attachments
 			'post_title'     => $data['title']['_content'],
 			//'post_excerpt'              // CAPTION. Set separately due to caption templates + not on flickr
-			'post_status'    => ( $data['visibility']['ispublic'] ) ? 'publish' : 'private', 
+			'post_status'    => ( $data['visibility']['ispublic'] ) ? 'publish' : 'private',
 			'comment_status' => 'closed', // comments should be on flickr page only
 			'ping_status'    => 'closed', // no pingbacks
 			//'post_password'
@@ -2950,7 +2950,7 @@ class FML implements FMLConstants
 			'post_type'      => self::POST_TYPE,
 			'post_mime_type' => $mime_type,
 			//'comment_count' => TODO
-			
+
 			//'post_category' => array of cateogires
 			'tags_input'     => $post_tags,
 			//'tax_input' => other taxonomy
@@ -2986,7 +2986,7 @@ class FML implements FMLConstants
 	}
 	/**
 	 * Turns a flickr ID into a post slug
-	 * 
+	 *
 	 * @param  string $flickr_id The number representing the flickr_id of the image
 	 * @return string            post slug if it exists in the database
 	 */
@@ -3002,7 +3002,7 @@ class FML implements FMLConstants
 	 *
 	 * Because this can be used in different places, the https is not
 	 * transformed to http
-	 * 
+	 *
 	 * @param  int|array $flickr_data if integer, its the post_id of flickr
 	 *         media, else it's the flickr_data
 	 * @param  bool      $force_original whether to get original even if
@@ -3039,7 +3039,7 @@ class FML implements FMLConstants
 	}
 	//
 	// CLASS FUNCTIONS
-	// 
+	//
 	static function debug_filter_show_variables( $return )  {
 		var_dump( func_get_args() );
 		return $return;

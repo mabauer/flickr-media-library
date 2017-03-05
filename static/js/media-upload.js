@@ -29,12 +29,12 @@
     this.query = null;
     this.sort_by = null;
     this.photoset_id = null;
-    
+
     // flickr results
     this.photos = [];
     this.photo_data = {};
     this.photosets = null;
-    
+
     // form objects (initialized in onready)
     this.$select_main   = null;
     this.$search_query  = null;
@@ -49,7 +49,7 @@
 
     //self.alignments = ['alignment_none', 'alignment_left', 'alignment_center', 'alignment_right'];
     //self.flickr_url = '';
-    //self.title_text = '';    
+    //self.title_text = '';
 
     // UTILITY FUNCTIONS
     /**
@@ -179,7 +179,7 @@
      * @param  {object} data the json data returned by flickr (probably "photos" or "photoset")
      */
     this.callbackSearchPhotos = function(data) {
-      if( !data ) return self.error(data); 
+      if( !data ) return self.error(data);
       if( !data.photos && !data.photoset ) return self.error(data);
       var photos = data.photos;
       if ( !photos ) photos = data.photoset;
@@ -217,7 +217,7 @@
      * Inject data from Flickr API calls into photo_data array
      *
      * {@see wp_prepare_attachment_for_js()}.
-     * 
+     *
      * This is modeled after data that goes into the media template:
      *
      * - id: Post ID
@@ -247,12 +247,12 @@
      * - height: height of image
      * - fileLength
      * - compat
-     * 
+     *
      * - sizes: ??
      * - size.url: img src?
      * - filesizeHumanReadable: file size in human readable terms
      * - uploading. can.remove, status userSettings: not supported
-     * 
+     *
      * @param {Number} id    The flickr_id of the photo
      * @param {Object} photo The data from the flickrApi
      */
@@ -405,7 +405,7 @@
      * + click event on image
      *
      * $this = li that triggered event
-     * 
+     *
      * @param  {event} event event object of tirgger
      */
     this.showPhotoInfo = function(event) {
@@ -460,7 +460,7 @@
 
     /**
      * Handle return on a query of if FML post exists or if FML post created
-     * 
+     *
      * @param  {Object} data AJAX response. Has status, flickr_id, post_id, post
      * @return {bool}        whether to stop the spinner
      */
@@ -707,8 +707,8 @@
 
     // APIs
     /**
-     * Make call to WordPress AJAX API for Flickr Media Library 
-     * 
+     * Make call to WordPress AJAX API for Flickr Media Library
+     *
      * @param  {String}   method           The API method to call
      * @param  {Object}   params           Other params to pass API
      * @param  {function} responseCallback callback function, return true if it can continue to do stuff
@@ -766,7 +766,7 @@
             // FML API error
             if (data.status != 'ok') {
               return self.handle_fml_error( data );
-            } 
+            }
             //console.log(data.signed.params);
             // …now we call flickr
             $.ajax( data.signed.url, {
@@ -804,7 +804,7 @@
         });
       }
     };
-    
+
     /**
      * jQuery ajax error
      * @param  {object} XHR         [description]
@@ -931,7 +931,7 @@
     };
 
     /**
-     * Render pagination 
+     * Render pagination
      */
     this.renderPagination = function() {
       //<li id="pagin"><input id="pagination" type="button" class="button" value="Load More" style="display: inline-block;"></li>
@@ -1009,7 +1009,7 @@
      * Render a photo onto the sidebar
      * @param {string} id flickr id of photo (data-id of li element clicked on)
      * @param {bool} showAltCaption whether to show the alt and caption form elements
-     * @return null     
+     * @return null
      */
     this.renderPhotoInfo = function(id) {
       var photo_data = self.photo_data[id],
@@ -1017,7 +1017,7 @@
 
       // if ( !photo_data ) { ???; } TODO
       //console.log(photo_data);
-      
+
       // ATTACHMENT DETAILS
       var $attach_details = $('.attachment-details',self.$media_sidebar);
       // image:
@@ -1090,7 +1090,7 @@
         }).removeAttr('readonly');
       }
       // description
-      //   instead of photo_data.description when checking, use photo_data.id because 
+      //   instead of photo_data.description when checking, use photo_data.id because
       //   description can be empty
       if ( photo_data.id ) {
         $('label[data-setting="description"] textarea',$attach_details).attr({ readonly: 'readonly' }).html(photo_data.description);
@@ -1100,9 +1100,9 @@
       $attach_details.attr({'data-id': id}).removeClass('hidden');
 
       // TODO: compat-item?
-      
+
       // ATTACHMENT DISPLAY SETTINGS
-      
+
       var $attach_display = $('.attachment-display-settings',self.$media_sidebar);
       // Only allow injection if it's in the media library and we are injecting html
       if ( photo_data.id && ( constants.page_type == 'media_button' ) ) {
@@ -1146,11 +1146,11 @@
 
     /**
      * Control the display of the add button on the form.
-     * 
+     *
      * @param  {String} msg      text of add button
      * @param  {bool}   disabled set disable state
      * @param  {Number} id       the flickrId to set it to, or 0 to remvoe
-     * @return {null} 
+     * @return {null}
      */
     this.renderAddButton = function( msg, disabled, id ) {
       // prop() doesn't seem to work :-(
@@ -1165,7 +1165,7 @@
     };
     /**
      * Shortcut to renderAddButton to handle most common cases
-     * 
+     *
      * @param  {Number} flickr_id The flickr id to add to the data field
      * @return {null}
      */
@@ -1238,7 +1238,9 @@
   function tb_close(event) {
     var win=window.dialogArguments||opener||parent||top;
     win.tb_remove();
-    event.preventDefault(); 
+    if (event !== "undefined") {
+      event.preventDefault();
+    }
   }
 
 })(jQuery, window, FMLConst);
