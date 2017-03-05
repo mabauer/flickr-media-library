@@ -2330,6 +2330,7 @@ class FML implements FMLConstants
 	    	$meta['created_timestamp_clean'] = $exif['Date and Time (Original)']['clean'];
 	    }
 	    if ( !empty( $exif['Exposure'] ) ) {
+			$meta['exposure'] = $exif['Exposure']['raw'];
 	    	$meta['exposure_clean'] = $exif['Exposure']['clean'];
 	    }
 	    if ( !empty( $exif['Focal Length'] ) ) {
@@ -2381,16 +2382,17 @@ class FML implements FMLConstants
 			$meta['lens'] = $exif['Lens']['raw'];
 		}
 	    if ( !empty( $exif['Lens Make'] ) ) {
-	    	$meta['lens'] = $exif['Lens Make']['raw'];
+	    	$make = $exif['Lens Make']['raw'];
 	    }
 		//     lens .= Lens Model
 	    if ( !empty( $exif['Lens Model'] ) ) {
-	    	if ( !empty( $meta['lens'] ) ) {
-	    		$meta['lens'] .= ' ';
+	        $model = $exif['Lens Model']['raw'];
+			// MB: Check if Lens Make is defined and not part of Lens Model
+	    	if ( !empty( $make) && substr_count( $model, $make ) == 0 ) {
+	    		$meta['lens'] = $make . ' ' . $model;
 	    	} else {
-	    		$meta['lens'] = '';
+	    		$meta['lens'] = $model;
 	    	}
-	    	$meta['lens'] .= $exif['Lens Model']['raw'];
 	    }
 		//     lens_info = Lens Info
 	    if ( !empty( $exif['Lens Info'] ) ) {
