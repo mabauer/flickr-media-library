@@ -2506,7 +2506,11 @@ class FML implements FMLConstants
 				// check if built-in flickr types
 				$maybe_size = self::flickr_sizes_to_dims( $size );
 				// it's either a flickr size or a WordPress size type
-				return ( $maybe_size ) ? $maybe_size : $_wp_additional_image_sizes[$size];
+				if ( $maybe_size ) 
+					return $maybe_size;
+				if ( array_key_exists($size , $_wp_additional_image_sizes) )
+					return $_wp_additional_image_sizes[$size];
+				return 'full'; 
 		}
 	}
 	/**
