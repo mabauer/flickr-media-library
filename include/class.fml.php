@@ -2119,12 +2119,19 @@ class FML implements FMLConstants
 	public function filter_wp_get_attachment_metadata( $metadata, $post_id) {
 		$post = get_post( $post_id );
 		// Only operate on flickr media images
-		if ( $post->post_type != self::POST_TYPE ) { return $metadata; }
-		$flickr_data = self::get_flickr_data( $post_id );
+		if ( $post->post_type != self::POST_TYPE ) { 
+			return $metadata; 
+		}
 
+		$flickr_data = self::get_flickr_data( $post_id );
 		$sizes = array();
 		$full = self::_get_largest_image($flickr_data);
 		$is_square = ( $full['width'] == $full['height'] );
+
+		// MB: In case no meta data is there yet, we'll create it
+		if (empty($metadata)) {
+			$metadata = array();
+		}
 		$metadata['width']  = intval( $full['width'] );
 		$metadata['height'] = intval( $full['height'] );
 		$metadata['file']   = $full['source'];
